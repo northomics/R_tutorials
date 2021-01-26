@@ -85,56 +85,98 @@ y <- 50
 y-x
 ```
 
+## Introduction to functions
 
-##  
+In programming languages, a function is a part of a program that **performs a task**. R itself has a bunch of *built-in* functions. We can also install and load specific **packages** that have functions that other people have created (we'll get to packages later).
 
-### Exercise with Code
+Some important lingo: 
 
-*Here's an exercise with some prepopulated code as well as `exercise.lines = 5` to provide a bit more initial room to work.*
+- **function**: part of a program that performs a task
+- **object**: how data is stored in R
+- **argument**: options that are given to a function 
+- **parameter**: another word for argument
 
-Now write a function that adds any two numbers and then call it:
-
-```{r add-function, exercise=TRUE, exercise.lines = 5}
-add <- function() {
-  
-}
+```{r function, exercise=T}
+# Comments (lines prefaced with a #) are ignored by R but are useful for you
+# When someone says you should "Comment your code", they mean this
+# I always explain what my code is doing so that it's easy to come back to
+b <- seq(from = 2, to = 10, by = 2)
+# b is the object
+# seq is the function
+# from, to, by are the arguments
+print(b)
 ```
 
-## Topic 2
+### Packages and libraries
 
-### Exercise with Hint
+"Base" R is pretty basic... that is, it doesn't have that many biology specific functions that we often need. The good this is that researchers often write functions and package them up in an R "package". You can install these packages if you need them.
 
-*Here's an exercise where the chunk is pre-evaulated via the `exercise.eval` option (so the user can see the default output we'd like them to customize). We also add a "hint" to the correct solution via the chunk immediate below labeled `print-limit-hint`.*
+There are two main package repositories you'll use:
 
-Modify the following code to limit the number of rows printed to 5:
+- [CRAN](https://cran.r-project.org/web/packages/): general R packages
+- [Bioconductor](https://bioconductor.org/packages): biology specific packages 
 
-```{r print-limit, exercise=TRUE, exercise.eval=TRUE}
-mtcars
+The first time you need to use a CRAN package, you install it using `install.packages("PACKAGENAME")`. After that, you only need to load it using `library(PACKAGENAME)`. *Note: see the quotation marks around the package name. These are important.*
+
+Bioconductor packages use a different function for installation. See the exercise below. You will most likely use a lot of Bioconductor packages, like DESeq2. DESeq2 is important for differential expression analysis!
+
+```{r packages, exercise=T}
+## CRAN packages 
+# Let's install ggplot2. We will be using this for data visualization. layer on. 
+install.packages("ggplot2")
+load(ggplot2)
+
+## Bioconductor packages
+# This is how you install Bioconductor itself
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(version = "3.12")
+# This is how you install Bioconductor packages
+BiocManager::install("DESeq2")
+# you load the packages the same way as the CRAN packages
+library(DESeq2)
 ```
 
-```{r print-limit-hint}
-head(mtcars)
+### Getting help with functions
+
+Sometimes (ok...often) I forget how exactly to use a function. Luckily there is built in help within R that walks us through what a function does, how to use it, and includes examples. All you need to do is type `?` before your function. Let's try it out
+
+```{r help, exercise=T}
+?ggplot()
+?plot()
+?seq()
+?c()
 ```
 
-### Quiz
 
-*You can include any number of single or multiple choice questions as a quiz. Use the `question` function to define a question and the `quiz` function for grouping multiple questions together.*
 
-Some questions to verify that you understand the purposes of various base and recommended R packages:
+## Some important functions
+
+Here are some functions that you'll need to use often:
+
+- `getwd()`
+- `setwd()`
+- `read.csv()`
+- `head()` 
+- `tail()`
+- `summary()`
+- `write.csv()`
+
+
+**Exercise:** Let's tak *7 mins* to explore these functions do and we'll discuss them :) 
+
+## Test your knowledge
+
+Let's test what we went over so far!
+
 
 ```{r quiz}
 quiz(
-  question("Which package contains functions for installing other R packages?",
-    answer("base"),
-    answer("tools"),
-    answer("utils", correct = TRUE),
-    answer("codetools")
-  ),
-  question("Which of the R packages listed below are used to create plots?",
-    answer("lattice", correct = TRUE),
-    answer("tools"),
-    answer("stats"),
-    answer("grid", correct = TRUE)
+  question("Consider this piece of code `x <- seq(from=1, to=10. by=2)` Which part of the code is the object?",
+    answer("x", correct = T),
+    answer("seq()"),
+    answer("to="),
+    answer("by=")
   )
 )
 ```

@@ -1,0 +1,131 @@
+---
+title: "Stats in R"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Linear regression
+
+Now that we've got the hang of some R functions, let's do some real analysis!
+
+### What is linear regression? 
+
+- explains the linear relationship between dependent (Y) and independent (X) variables 
+- "line of best fit" to data
+- a "simple" linear regression is equivalent to a *correlation*
+- can be considered *supervised* machine learning technique ([see here](http://machinelearningmastery.com/linear-regression-for-machine-learning/))
+    - the model learns from known data, and can be used to predict
+    - sometimes we are looking for trends and don't care about predictions
+
+linear regression takes the linear equation of:
+
+$$ Y = mX + b $$
+But we're going to use it more like:
+
+$$ \hat{y_{i}} = \hat{\beta_{0}} + \hat{\beta_{1}}x_{i} + \epsilon_{i}$$
+
+where:  
+$\hat{y_{i}} =$ predicted response for an experimental unit $i$  
+$x_{i} =$ predictor (or independent variable) of experimental unit $i$  
+$\hat{\beta_{0}} =$ is expected value when $x_{i} = 0$ (intercept)  
+$\hat{\beta_{1}} =$ slope  
+$\epsilon =$ some error, because models are never perfect!  
+
+[//]: $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ are unknown
+
+
+[//]: **$\beta_{0}$ and $\beta_{1}$: what we have to estimate**
+
+$\beta_{0}$ and $\beta_{1}$ are unknown. We will *estimate these coefficients* from known data.
+To do this, we need to estimate a line of best fit than minimizes error... this is where *linear regression* comes in!
+
+## Load some data!
+
+We have options for loading data. 
+
+1. We read use `read.csv()` to read in data from a file.  
+2. We can use a built-in dataset from an R package.
+
+Today we'll use a built in dataset called the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/index.html) dataset. 
+
+
+```{r penguin, echo = FALSE, out.width = "100%", fig.cap = "Artwork by @allison_horst."}
+knitr::include_graphics("images/penguins.png")
+```
+
+
+
+```{r dataloading, exercise=TRUE}
+# install the package, normally required
+# install.packages("palmerpenguins")
+# load the package
+library(palmerpenguins)
+# call the data from the package
+data(package = 'palmerpenguins') 
+head(penguins)
+```
+
+We will focus on two penguin measurements for today:
+
+```{r penguinmeasures, echo = FALSE, out.width = "100%", fig.cap = "Artwork by @allison_horst."}
+knitr::include_graphics("images/measurements.png")
+```
+
+
+### Exercise with Code
+
+*Here's an exercise with some prepopulated code as well as `exercise.lines = 5` to provide a bit more initial room to work.*
+
+Now write a function that adds any two numbers and then call it:
+
+```{r add-function, exercise=TRUE, exercise.lines = 5}
+add <- function() {
+  
+}
+```
+
+## Topic 2
+
+### Exercise with Hint
+
+*Here's an exercise where the chunk is pre-evaulated via the `exercise.eval` option (so the user can see the default output we'd like them to customize). We also add a "hint" to the correct solution via the chunk immediate below labeled `print-limit-hint`.*
+
+Modify the following code to limit the number of rows printed to 5:
+
+```{r print-limit, exercise=TRUE, exercise.eval=TRUE}
+mtcars
+```
+
+```{r print-limit-hint}
+head(mtcars)
+```
+
+### Quiz
+
+*You can include any number of single or multiple choice questions as a quiz. Use the `question` function to define a question and the `quiz` function for grouping multiple questions together.*
+
+Some questions to verify that you understand the purposes of various base and recommended R packages:
+
+```{r quiz}
+quiz(
+  question("Which package contains functions for installing other R packages?",
+    answer("base"),
+    answer("tools"),
+    answer("utils", correct = TRUE),
+    answer("codetools")
+  ),
+  question("Which of the R packages listed below are used to create plots?",
+    answer("lattice", correct = TRUE),
+    answer("tools"),
+    answer("stats"),
+    answer("grid", correct = TRUE)
+  )
+)
+```
+

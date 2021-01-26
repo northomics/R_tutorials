@@ -1,9 +1,9 @@
 # History files
-.Rhistory
+.Rhistory*
 .Rapp.history
 
 # Session Data files
-.RData
+.RData*
 
 # User-specific files
 .Ruserdata
@@ -18,7 +18,7 @@
 /*.Rcheck/
 
 # RStudio files
-.Rproj.user/
+.Rproj.user/*
 
 # produced vignettes
 vignettes/*.html
@@ -37,3 +37,4 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+.Rproj.user

@@ -78,54 +78,137 @@ knitr::include_graphics("images/measurements.png")
 ```
 
 
-### Exercise with Code
+## Linear regression with data
 
-*Here's an exercise with some prepopulated code as well as `exercise.lines = 5` to provide a bit more initial room to work.*
+Ok, let's look at the data to see if a linear model looks reasonable...
 
-Now write a function that adds any two numbers and then call it:
 
-```{r add-function, exercise=TRUE, exercise.lines = 5}
-add <- function() {
-  
-}
+### Simple visual check
+
+```{r penguincor, exercise=TRUE}
+plot(penguins$bill_length_mm, penguins$bill_depth_mm, 
+     main="Bill length vs bill depth", xlab = "Bill length (mm)", ylab = "
+     Bill depth (mm)")
 ```
 
-## Topic 2
+Hmmm... not sure yet. But! Remember! There are **three** types of penguins in the data. Maybe we'll see some patterns later on...
 
-### Exercise with Hint
+## Setting up a linear regression
 
-*Here's an exercise where the chunk is pre-evaulated via the `exercise.eval` option (so the user can see the default output we'd like them to customize). We also add a "hint" to the correct solution via the chunk immediate below labeled `print-limit-hint`.*
+Let's estimate the coefficients we were talking about earlier.
 
-Modify the following code to limit the number of rows printed to 5:
+- `lm()` is the linear model function. 
+- `formula` and `data` are parameters
 
-```{r print-limit, exercise=TRUE, exercise.eval=TRUE}
-mtcars
+Try using this code. What does `summary()` give us? What does `abline()` do?
+
+```{r linearmodel, exercise=TRUE}
+lm1 <- lm(formula = bill_length_mm ~ bill_depth_mm, data = penguins)
+summary(lm1)
+plot(penguins$bill_length_mm, penguins$bill_depth_mm, 
+     main="Bill length vs bill depth", xlab = "Bill length (mm)", ylab = "
+     Bill depth (mm)")
+abline(lm1, col="purple")
 ```
 
-```{r print-limit-hint}
-head(mtcars)
-```
+### Summary output
 
-### Quiz
+Our summary output gives us a lot of information:
 
-*You can include any number of single or multiple choice questions as a quiz. Use the `question` function to define a question and the `quiz` function for grouping multiple questions together.*
+1. Info about distribution of residuals (errors)
+2. The estimates of our coefficients
+3. Standard error of coefficient estimates
+    - square root of the variance 
+      - $\sqrt{\sigma}^{2}$
+3. t-values (coefficient estimates/standard error)
+3. $R^{2}$ = (want closer to 1)
+4. p-values 
+    - testing if your coefficient = 0
 
-Some questions to verify that you understand the purposes of various base and recommended R packages:
 
-```{r quiz}
+```{r quizlm}
 quiz(
-  question("Which package contains functions for installing other R packages?",
-    answer("base"),
-    answer("tools"),
-    answer("utils", correct = TRUE),
-    answer("codetools")
-  ),
-  question("Which of the R packages listed below are used to create plots?",
-    answer("lattice", correct = TRUE),
-    answer("tools"),
-    answer("stats"),
-    answer("grid", correct = TRUE)
+  question("Look back at the summary. Does it seem like our linear model is a good fit to our data?",
+    answer("Yes!! Look at the coefficient p-value!"),
+    answer("Nope. Check out the line of best fit and the $R^{2}$", correct=T)
   )
 )
 ```
 
+
+## Linear models with more coefficients
+
+OK, so maybe all penguins don't follow the same bill length to depth patterns. How about we test if the type of penguin has an effect on this pattern? We can add this information to our linear model using a different `formula=` parameter, but we have to formulate it on our own. 
+
+We have some options on possible formulas for the linear regression:
+
+* length ~ depth + species 
+    * $\hat{length_{i}} = \hat{\beta_{0}} + \hat{\beta_{1}}depth_{i} + \hat{\beta_{2}}species_{i} + \epsilon_{i}$ 
+* length ~ depth:species  
+    * $\hat{length_{i}} = \hat{\beta_{0}} + \hat{\beta_{2}}species_{i}depth_{i} + \epsilon_{i}$ 
+* length ~ depth*species = length ~ depth + species + depth x species 
+    * $\hat{length_{i}} = \hat{\beta_{0}} + \hat{\beta_{1}}depth_{i} + \hat{\beta_{2}}species_{i} + \hat{\beta_{2}}species_{i}depth_{i} + \epsilon_{i}$ 
+
+## Your first exercise    
+ 
+OK, so we can run all of these functions, but how do we know what the output is? How can we look at coefficients, error estimate, etc?
+
+Here's your chance to show off! Type how you would print out this information we need and then click on Run Code.
+
+```{r lm_coefficients, exercise=TRUE, exercise_eval=T}
+lm2 <- lm(formula = bill_length_mm ~ bill_depth_mm + species, data = penguins)
+lm3 <- lm(formula = bill_length_mm ~ bill_depth_mm:species, data = penguins)
+lm4 <- lm(formula =bill_length_mm ~ bill_depth_mm*species, data = penguins)
+```
+
+```{r lm_coefficients-solution}
+lm2 <- lm(formula = bill_length_mm ~ bill_depth_mm + species, data = penguins)
+lm3 <- lm(formula = bill_length_mm ~ bill_depth_mm:species, data = penguins)
+lm4 <- lm(formula = bill_length_mm ~ bill_depth_mm*species, data = penguins)
+
+summary(lm2)
+summary(lm3)
+summary(lm4)
+```
+
+How can we interpret these linear models? 
+
+*Let's discuss*
+
+## Visualizing more complex LMs
+
+`ggplot2` is a great package for visualizing all types of data. I think it's more useful to learn how to use `ggplot2` than the "built-in" plotting functions in R. In my opinion, it is more intuitive.... but that's all up for debate. 
+
+We're going to learn how to use ``ggplot2` to plot our penguin linear models! 
+
+```{r ggplot-intro, exercise=T}
+library(ggplot2)
+```
+
+
+
+
+```{r ggplotpenguin, exercise=T}
+library(ggplot2)
+(bill_len_dep <- ggplot(data = penguins,
+                         aes(x = bill_length_mm,
+                             y = bill_depth_mm,
+                             group = species)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
+  theme_minimal() +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme(legend.position = c(0.85, 0.15),
+        legend.background = element_rect(fill = "white", color = NA),
+        plot.title.position = "plot",
+        plot.caption = element_text(hjust = 0, face= "italic"),
+        plot.caption.position = "plot"))
+
+```

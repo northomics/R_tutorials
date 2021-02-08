@@ -175,17 +175,79 @@ How can we interpret these linear models?
 
 *Let's discuss*
 
-## Visualizing more complex LMs
+## Differences in penguins
+
+Before we get into the fun part (data visualization!) , how about we try some more simple stats.
+
+Let's say that we wanted to show a professor that two penguin species differ in mean body weight. We hypothesize that the Chinstrap penguins have a different mean body weight than the Gentoo penguins.
+
+```{r quizstat}
+quiz(
+  question("What type of statistical test can we do to test hypothesis?",
+    answer("Linear model"),
+    answer("Student t-test", correct=T),
+    answer("ANOVA"),
+    answer("We can just look at the means and decide")
+  )
+)
+```
+
+
+### Finding the mean bodyweight of penguins
+
+We have a pretty big dataset of info on penguins. We don't really need all of it, do we? Right now we're only interested in body weight info of Chinstrap and Gentoo penguins.
+
+We're going to have to subset our data so that we can focus on what we're interested in right now. We are going to be using the function `filter()`. To do this, we're also going to have to learn about "logical operators". 
+
+You will use logical operators often in R programming. Here are some examples:
+
+- `==`: equals
+- `!=`: does not equal
+- `&`: AND
+- `|`: OR
+- `>`: greater than
+- `>`: less than
+- `>=`: greater or equal to
+- `<=`: less than or equal to
+
+Today we want to filter for Chinstrap OR (`|`) Gentoo penguins. It might seem like we're interested in Chinstrap AND (`&`) Gentoo penguins, but in programming logic, that is impossible. **Let's discuss why.**.
+
+```{r filter, exercise=TRUE}
+library(tidyverse)
+## filtering for Chinstrap OR Gentoo penguins from the species
+penguin_chin_gent <- filter(data = penguins, species == "Chinstrap" | species == "Gentoo")
+# print the first couple rows
+head(penguin_chin_gent)
+```
+
+Now, we're only interested in the bod yweight of the penguins. We should make an even smaller dataset that only includes the body weight information of Gentoo and Chinstrap penguins. We're using the function `select()`. `select()` is special and **always** uses the first argument as the data, so we don't need to tell it! Fun.  
+
+
+```{r select, exercise=T}
+## what are the column names of our dataset again? Let's check
+colnames(penguin_chin_gent)
+
+## OK, so body weight is callled "body_mass_g". Let's select body_mass_g and species so that we
+## can calculate the mean body weight of each species.
+penguin_chin_gent_bw <- select(penguin_chin_gent, species, body_mass_g)
+```
+
+
+
+
+## Mini intro to `ggplot2`
 
 `ggplot2` is a great package for visualizing all types of data. I think it's more useful to learn how to use `ggplot2` than the "built-in" plotting functions in R. In my opinion, it is more intuitive.... but that's all up for debate. 
 
-We're going to learn how to use ``ggplot2` to plot our penguin linear models! 
+We're going to learn how to use ``ggplot2` to plot using our penguin and some of the hypothesis testing we just did. 
 
 ```{r ggplot-intro, exercise=T}
 library(ggplot2)
 ```
 
 
+
+### How is 
 
 
 ```{r ggplotpenguin, exercise=T}
@@ -210,5 +272,28 @@ library(ggplot2)
         plot.title.position = "plot",
         plot.caption = element_text(hjust = 0, face= "italic"),
         plot.caption.position = "plot"))
+
+```
+
+
+## Your exercise 
+
+Now that we've learned how to:
+
+1. Filter data
+2. Select relevant columns
+3. Test our hypotheses
+4. Visualize our data
+
+**It's time for you to complete some of this on your own!**
+
+Your task:
+Come up with your own hypothesis using the penguin dataset and write it out. Choose a statistical test (*hint: it can be one we used already*). Complete your statistical test. Visualize your data using `ggplot2`. 
+
+
+```{r testing-stats, exercise=T}
+### Use this space to complete your exercise.
+
+
 
 ```

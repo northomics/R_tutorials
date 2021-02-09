@@ -9,8 +9,26 @@ library(learnr)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+## Tutorial outline
 
-## Linear regression
+The goal for this tutorial is to:
+
+1. Introduce some stats (eg. linear regression, t-test)
+2. Learning the benefits of data subsetting
+3. Complete different types of data visualization
+
+
+By the end of this tutorial you will learn how to:
+
+1. Complete and evaluate linear regression
+2. Perform t-tests
+3. Subset datasets using `{dplyr}`
+4. Create plots using `{ggplot2}`:
+    - barplot
+    - scatterplot 
+    - linear regression
+
+## 1. Linear regression intro
 
 Now that we've got the hang of some R functions, let's do some real analysis!
 
@@ -40,12 +58,10 @@ $\epsilon =$ some error, because models are never perfect!
 [//]: $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ are unknown
 
 
-[//]: **$\beta_{0}$ and $\beta_{1}$: what we have to estimate**
-
 $\beta_{0}$ and $\beta_{1}$ are unknown. We will *estimate these coefficients* from known data.
 To do this, we need to estimate a line of best fit than minimizes error... this is where *linear regression* comes in!
 
-## Load some data!
+## 2. Loading penguin data
 
 We have options for loading data. 
 
@@ -78,7 +94,7 @@ knitr::include_graphics("images/measurements.png")
 ```
 
 
-## Linear regression with data
+## 3. Linear regression...with penguins
 
 Ok, let's look at the data to see if a linear model looks reasonable...
 
@@ -93,7 +109,7 @@ plot(penguins$bill_length_mm, penguins$bill_depth_mm,
 
 Hmmm... not sure yet. But! Remember! There are **three** types of penguins in the data. Maybe we'll see some patterns later on...
 
-## Setting up a linear regression
+## 4. Setting up a linear regression
 
 Let's estimate the coefficients we were talking about earlier.
 
@@ -136,7 +152,7 @@ quiz(
 ```
 
 
-## Linear models with more coefficients
+## 5. Complex penguin linear models
 
 OK, so maybe all penguins don't follow the same bill length to depth patterns. How about we test if the type of penguin has an effect on this pattern? We can add this information to our linear model using a different `formula=` parameter, but we have to formulate it on our own. 
 
@@ -149,7 +165,7 @@ We have some options on possible formulas for the linear regression:
 * length ~ depth*species = length ~ depth + species + depth x species 
     * $\hat{length_{i}} = \hat{\beta_{0}} + \hat{\beta_{1}}depth_{i} + \hat{\beta_{2}}species_{i} + \hat{\beta_{2}}species_{i}depth_{i} + \epsilon_{i}$ 
 
-## Your first exercise    
+## 6. Your first exercise   
  
 OK, so we can run all of these functions, but how do we know what the output is? How can we look at coefficients, error estimate, etc?
 
@@ -175,7 +191,7 @@ How can we interpret these linear models?
 
 *Let's discuss*
 
-## Differences in penguins
+## 7. Are all penguins the same?
 
 Before we get into the fun part (data visualization!) , how about we try some more simple stats.
 
@@ -210,18 +226,24 @@ You will use logical operators often in R programming. Here are some examples:
 - `>=`: greater or equal to
 - `<=`: less than or equal to
 
-Today we want to filter for Chinstrap OR (`|`) Gentoo penguins. It might seem like we're interested in Chinstrap AND (`&`) Gentoo penguins, but in programming logic, that is impossible. **Let's discuss why.**.
+hote: We're using functions `filter()` and `select()`. These functions are from the [`tidyverse`](https://tidyverse.tidyverse.org) and use special "syntax".  Most `tidyverse` functions **always** consider the first argument as the data, so we don't need explicitly write `data = penguins`. Fun!
+
+Today we want to filter for Chinstrap OR (`|`) Gentoo penguins. It might seem like we're interested in Chinstrap AND (`&`) Gentoo penguins, but in programming logic, that is impossible. **Let's try both and see what happens.**.
 
 ```{r filter, exercise=TRUE}
+## loading ALL tidyverse packages at once because we'll be using many of them
 library(tidyverse)
-## filtering for Chinstrap OR Gentoo penguins from the species
-penguin_chin_gent <- filter(data = penguins, species == "Chinstrap" | species == "Gentoo")
+## filtering for Chinstrap AND Gentoo penguins from the species column of penguins
+penguin_chin_gent <- filter(penguins, species == "Chinstrap" & species == "Gentoo")
+head(penguin_chin_gent)
+
+## filtering for Chinstrap OR Gentoo penguins from the species column of penguins
+penguin_chin_gent <- filter(penguins, species == "Chinstrap" | species == "Gentoo")
 # print the first couple rows
 head(penguin_chin_gent)
 ```
 
-Now, we're only interested in the bod yweight of the penguins. We should make an even smaller dataset that only includes the body weight information of Gentoo and Chinstrap penguins. We're using the function `select()`. `select()` is special and **always** uses the first argument as the data, so we don't need to tell it! Fun.  
-
+Now, we're only interested in the bodyweight of the penguins. We should make an even smaller dataset that only includes the body weight information of Gentoo and Chinstrap penguins. 
 
 ```{r select, exercise=T}
 ## what are the column names of our dataset again? Let's check
@@ -230,21 +252,36 @@ colnames(penguin_chin_gent)
 ## OK, so body weight is callled "body_mass_g". Let's select body_mass_g and species so that we
 ## can calculate the mean body weight of each species.
 penguin_chin_gent_bw <- select(penguin_chin_gent, species, body_mass_g)
+head(penguin_chin_gent_bw)
+tail(penguin_chin_gent_bw)
+
+## what does this function do?
+count(penguin_chin_gent_bw, species)
 ```
 
+Now that we have our dataset, how about we plot some data???
 
 
 
 ## Mini intro to `ggplot2`
 
-`ggplot2` is a great package for visualizing all types of data. I think it's more useful to learn how to use `ggplot2` than the "built-in" plotting functions in R. In my opinion, it is more intuitive.... but that's all up for debate. 
+`ggplot2` is a great package for visualizing all types of data. I think it's more useful to learn how to use `ggplot2` than the "built-in" plotting functions in R that we used briefly in `3. Linear regression...with penguins`. In my opinion, it is more intuitive.... but that's all up for debate. 
 
-We're going to learn how to use ``ggplot2` to plot using our penguin and some of the hypothesis testing we just did. 
+We're going to learn how to use ``ggplot2` to plot our penguin data.
 
-```{r ggplot-intro, exercise=T}
-library(ggplot2)
+```{r ggplot, echo = FALSE, out.width = "100%", fig.cap = "Artwork by @allison_horst."}
+knitr::include_graphics("images/ggplot2_masterpiece.png")
 ```
 
+First we need to initialize a `ggplot`. This tells ggplot which data we'd like to plot and which features we want to plot on the x and y axes. 
+
+```{r ggplot-intro, exercise=T}
+# ggplot2 is already loaded with tidyverse
+#library(ggplot2)
+ggplot(data=penguin_chin_gent_bw, aes(x=species, y=body_mass_g)) 
+
+```
+We haven't told `ggplot()` what *kind* of plot we want. `ggplot()` uses "geoms" to plot 
 
 
 ### How is 
@@ -276,7 +313,7 @@ library(ggplot2)
 ```
 
 
-## Your exercise 
+## Your homework 
 
 Now that we've learned how to:
 

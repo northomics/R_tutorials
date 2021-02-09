@@ -116,8 +116,29 @@ $(document).ready(function () {
 
 <div class="topics">
 
-<div id="section-linear-regression" class="section level2">
-<h2>Linear regression</h2>
+<div id="section-tutorial-outline" class="section level2">
+<h2>Tutorial outline</h2>
+<p>The goal for this tutorial is to:</p>
+<ol style="list-style-type: decimal">
+<li>Introduce some stats (eg. linear regression, t-test)</li>
+<li>Learning the benefits of data subsetting</li>
+<li>Complete different types of data visualization</li>
+</ol>
+<p>By the end of this tutorial you will learn how to:</p>
+<ol style="list-style-type: decimal">
+<li>Complete and evaluate linear regression</li>
+<li>Perform t-tests</li>
+<li>Subset datasets using <code>{dplyr}</code></li>
+<li>Create plots using <code>{ggplot2}</code>:
+<ul>
+<li>barplot</li>
+<li>scatterplot</li>
+<li>linear regression</li>
+</ul></li>
+</ol>
+</div>
+<div id="section-linear-regression-intro" class="section level2">
+<h2>1. Linear regression intro</h2>
 <p>Now that we’ve got the hang of some R functions, let’s do some real analysis!</p>
 <div id="section-what-is-linear-regression" class="section level3">
 <h3>What is linear regression?</h3>
@@ -143,8 +164,8 @@ $(document).ready(function () {
 <p><span class="math inline">\(\beta_{0}\)</span> and <span class="math inline">\(\beta_{1}\)</span> are unknown. We will <em>estimate these coefficients</em> from known data. To do this, we need to estimate a line of best fit than minimizes error… this is where <em>linear regression</em> comes in!</p>
 </div>
 </div>
-<div id="section-load-some-data" class="section level2">
-<h2>Load some data!</h2>
+<div id="section-loading-penguin-data" class="section level2">
+<h2>2. Loading penguin data</h2>
 <p>We have options for loading data.</p>
 <ol style="list-style-type: decimal">
 <li>We read use <code>read.csv()</code> to read in data from a file.<br />
@@ -176,8 +197,8 @@ Artwork by <span class="citation">@allison_horst</span>.
 </p>
 </div>
 </div>
-<div id="section-linear-regression-with-data" class="section level2">
-<h2>Linear regression with data</h2>
+<div id="section-linear-regressionwith-penguins" class="section level2">
+<h2>3. Linear regression…with penguins</h2>
 <p>Ok, let’s look at the data to see if a linear model looks reasonable…</p>
 <div id="section-simple-visual-check" class="section level3">
 <h3>Simple visual check</h3>
@@ -191,7 +212,7 @@ Artwork by <span class="citation">@allison_horst</span>.
 </div>
 </div>
 <div id="section-setting-up-a-linear-regression" class="section level2">
-<h2>Setting up a linear regression</h2>
+<h2>4. Setting up a linear regression</h2>
 <p>Let’s estimate the coefficients we were talking about earlier.</p>
 <ul>
 <li><code>lm()</code> is the linear model function.</li>
@@ -237,8 +258,8 @@ abline(lm1, col=&quot;purple&quot;)</code></pre>
 </div></p>
 </div>
 </div>
-<div id="section-linear-models-with-more-coefficients" class="section level2">
-<h2>Linear models with more coefficients</h2>
+<div id="section-complex-penguin-linear-models" class="section level2">
+<h2>5. Complex penguin linear models</h2>
 <p>OK, so maybe all penguins don’t follow the same bill length to depth patterns. How about we test if the type of penguin has an effect on this pattern? We can add this information to our linear model using a different <code>formula=</code> parameter, but we have to formulate it on our own.</p>
 <p>We have some options on possible formulas for the linear regression:</p>
 <ul>
@@ -257,7 +278,7 @@ abline(lm1, col=&quot;purple&quot;)</code></pre>
 </ul>
 </div>
 <div id="section-your-first-exercise" class="section level2">
-<h2>Your first exercise</h2>
+<h2>6. Your first exercise</h2>
 <p>OK, so we can run all of these functions, but how do we know what the output is? How can we look at coefficients, error estimate, etc?</p>
 <p>Here’s your chance to show off! Type how you would print out this information we need and then click on Run Code.</p>
 <div class="tutorial-exercise" data-label="lm_coefficients" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
@@ -278,8 +299,8 @@ summary(lm4)</code></pre>
 <p>How can we interpret these linear models?</p>
 <p><em>Let’s discuss</em></p>
 </div>
-<div id="section-differences-in-penguins" class="section level2">
-<h2>Differences in penguins</h2>
+<div id="section-are-all-penguins-the-same" class="section level2">
+<h2>7. Are all penguins the same?</h2>
 <p>Before we get into the fun part (data visualization!) , how about we try some more simple stats.</p>
 <p>Let’s say that we wanted to show a professor that two penguin species differ in mean body weight. We hypothesize that the Chinstrap penguins have a different mean body weight than the Gentoo penguins.</p>
 <p><div class="panel-heading tutorial-quiz-title">Quiz</div><div class="panel panel-default">
@@ -305,35 +326,57 @@ summary(lm4)</code></pre>
 <li><code>&gt;=</code>: greater or equal to</li>
 <li><code>&lt;=</code>: less than or equal to</li>
 </ul>
-<p>Today we want to filter for Chinstrap OR (<code>|</code>) Gentoo penguins. It might seem like we’re interested in Chinstrap AND (<code>&amp;</code>) Gentoo penguins, but in programming logic, that is impossible. <strong>Let’s discuss why.</strong>.</p>
+<p>hote: We’re using functions <code>filter()</code> and <code>select()</code>. These functions are from the <a href="https://tidyverse.tidyverse.org"><code>tidyverse</code></a> and use special “syntax”. Most <code>tidyverse</code> functions <strong>always</strong> consider the first argument as the data, so we don’t need explicitly write <code>data = penguins</code>. Fun!</p>
+<p>Today we want to filter for Chinstrap OR (<code>|</code>) Gentoo penguins. It might seem like we’re interested in Chinstrap AND (<code>&amp;</code>) Gentoo penguins, but in programming logic, that is impossible. <strong>Let’s try both and see what happens.</strong>.</p>
 <div class="tutorial-exercise" data-label="filter" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>library(tidyverse)
-## filtering for Chinstrap OR Gentoo penguins from the species
-penguin_chin_gent &lt;- filter(data = penguins, species == &quot;Chinstrap&quot; | species == &quot;Gentoo&quot;)
+<pre class="text"><code>## loading ALL tidyverse packages at once because we&#39;ll be using many of them
+library(tidyverse)
+## filtering for Chinstrap AND Gentoo penguins from the species column of penguins
+penguin_chin_gent &lt;- filter(penguins, species == &quot;Chinstrap&quot; &amp; species == &quot;Gentoo&quot;)
+head(penguin_chin_gent)
+
+## filtering for Chinstrap OR Gentoo penguins from the species column of penguins
+penguin_chin_gent &lt;- filter(penguins, species == &quot;Chinstrap&quot; | species == &quot;Gentoo&quot;)
 # print the first couple rows
 head(penguin_chin_gent)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
-<p>Now, we’re only interested in the bod yweight of the penguins. We should make an even smaller dataset that only includes the body weight information of Gentoo and Chinstrap penguins. We’re using the function <code>select()</code>. <code>select()</code> is special and <strong>always</strong> uses the first argument as the data, so we don’t need to tell it! Fun.</p>
+<p>Now, we’re only interested in the bodyweight of the penguins. We should make an even smaller dataset that only includes the body weight information of Gentoo and Chinstrap penguins.</p>
 <div class="tutorial-exercise" data-label="select" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>## what are the column names of our dataset again? Let&#39;s check
 colnames(penguin_chin_gent)
 
 ## OK, so body weight is callled &quot;body_mass_g&quot;. Let&#39;s select body_mass_g and species so that we
 ## can calculate the mean body weight of each species.
-penguin_chin_gent_bw &lt;- select(penguin_chin_gent, species, body_mass_g)</code></pre>
+penguin_chin_gent_bw &lt;- select(penguin_chin_gent, species, body_mass_g)
+head(penguin_chin_gent_bw)
+tail(penguin_chin_gent_bw)
+
+## what does this function do?
+count(penguin_chin_gent_bw, species)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
+<p>Now that we have our dataset, how about we plot some data???</p>
 </div>
 </div>
 <div id="section-mini-intro-to-ggplot2" class="section level2">
 <h2>Mini intro to <code>ggplot2</code></h2>
-<p><code>ggplot2</code> is a great package for visualizing all types of data. I think it’s more useful to learn how to use <code>ggplot2</code> than the “built-in” plotting functions in R. In my opinion, it is more intuitive…. but that’s all up for debate.</p>
-<p>We’re going to learn how to use `<code>ggplot2</code> to plot using our penguin and some of the hypothesis testing we just did.</p>
+<p><code>ggplot2</code> is a great package for visualizing all types of data. I think it’s more useful to learn how to use <code>ggplot2</code> than the “built-in” plotting functions in R that we used briefly in <code>3. Linear regression...with penguins</code>. In my opinion, it is more intuitive…. but that’s all up for debate.</p>
+<p>We’re going to learn how to use `<code>ggplot2</code> to plot our penguin data.</p>
+<div class="figure">
+<img src="images/ggplot2_masterpiece.png" alt="Artwork by @allison_horst." width="100%" />
+<p class="caption">
+Artwork by <span class="citation">@allison_horst</span>.
+</p>
+</div>
+<p>First we need to initialize a <code>ggplot</code>. This tells ggplot which data we’d like to plot and which features we want to plot on the x and y axes.</p>
 <div class="tutorial-exercise" data-label="ggplot-intro" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>library(ggplot2)</code></pre>
+<pre class="text"><code># ggplot2 is already loaded with tidyverse
+#library(ggplot2)
+ggplot(data=penguin_chin_gent_bw, aes(x=species, y=body_mass_g)) </code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
+<p>We haven’t told <code>ggplot()</code> what <em>kind</em> of plot we want. <code>ggplot()</code> uses “geoms” to plot</p>
 <div id="section-how-is" class="section level3">
 <h3>How is</h3>
 <div class="tutorial-exercise" data-label="ggplotpenguin" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
@@ -362,8 +405,8 @@ penguin_chin_gent_bw &lt;- select(penguin_chin_gent, species, body_mass_g)</code
 </div>
 </div>
 </div>
-<div id="section-your-exercise" class="section level2">
-<h2>Your exercise</h2>
+<div id="section-your-homework" class="section level2">
+<h2>Your homework</h2>
 <p>Now that we’ve learned how to:</p>
 <ol style="list-style-type: decimal">
 <li>Filter data</li>
@@ -415,7 +458,7 @@ output$`tutorial-exercise-linearmodel-output` <- renderUI({
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quizlm-1", question = structure("Look back at the summary. Does it seem like our linear model is a good fit to our data?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_ebb066c",     option = "Yes!! Look at the coefficient p-value!", value = "Yes!! Look at the coefficient p-value!",     label = structure("Yes!! Look at the coefficient p-value!", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_d333253",     option = "Nope. Check out the line of best fit and the $R^{2}$",     value = "Nope. Check out the line of best fit and the $R^{2}$",     label = structure("Nope. Check out the line of best fit and the \\(R^{2}\\)", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quizlm-1-answer", question = "quizlm-1"), loading = structure("<strong>Loading:<\u002fstrong> \nLook back at the summary. Does it seem like our linear model is a good fit to our data?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 1052781304.00976, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quizlm-1", question = structure("Look back at the summary. Does it seem like our linear model is a good fit to our data?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_bb40aa3",     option = "Yes!! Look at the coefficient p-value!", value = "Yes!! Look at the coefficient p-value!",     label = structure("Yes!! Look at the coefficient p-value!", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_f20dd7d",     option = "Nope. Check out the line of best fit and the $R^{2}$",     value = "Nope. Check out the line of best fit and the $R^{2}$",     label = structure("Nope. Check out the line of best fit and the \\(R^{2}\\)", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quizlm-1-answer", question = "quizlm-1"), loading = structure("<strong>Loading:<\u002fstrong> \nLook back at the summary. Does it seem like our linear model is a good fit to our data?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 14219588.9933785, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -426,7 +469,7 @@ output$`tutorial-exercise-lm_coefficients-output` <- renderUI({
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quizstat-1", question = structure("What type of statistical test can we do to test hypothesis?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_ca89c01",     option = "Linear model", value = "Linear model", label = structure("Linear model", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_23d1659",     option = "Student t-test", value = "Student t-test", label = structure("Student t-test", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_90dd9dd",     option = "ANOVA", value = "ANOVA", label = structure("ANOVA", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_b8a2211",     option = "We can just look at the means and decide", value = "We can just look at the means and decide",     label = structure("We can just look at the means and decide", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quizstat-1-answer", question = "quizstat-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhat type of statistical test can we do to test hypothesis?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 2017670943.06045, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quizstat-1", question = structure("What type of statistical test can we do to test hypothesis?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_e43717f",     option = "Linear model", value = "Linear model", label = structure("Linear model", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_2c7b68d",     option = "Student t-test", value = "Student t-test", label = structure("Student t-test", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_9f21129",     option = "ANOVA", value = "ANOVA", label = structure("ANOVA", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_b64b091",     option = "We can just look at the means and decide", value = "We can just look at the means and decide",     label = structure("We can just look at the means and decide", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quizstat-1-answer", question = "quizstat-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhat type of statistical test can we do to test hypothesis?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 1849432050.13879, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">

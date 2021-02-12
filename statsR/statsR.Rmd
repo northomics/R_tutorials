@@ -6,6 +6,10 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 library(learnr)
+library(tidyverse)
+library(palmerpenguins)
+# call the data from the package
+data(package = 'palmerpenguins') 
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -263,7 +267,7 @@ Now that we have our dataset, how about we plot some data???
 
 
 
-## Mini intro to `ggplot2`
+## 8. Intro to `ggplot2`
 
 `ggplot2` is a great package for visualizing all types of data. I think it's more useful to learn how to use `ggplot2` than the "built-in" plotting functions in R that we used briefly in `3. Linear regression...with penguins`. In my opinion, it is more intuitive.... but that's all up for debate. 
 
@@ -281,10 +285,81 @@ First we need to initialize a `ggplot`. This tells ggplot which data we'd like t
 ggplot(data=penguin_chin_gent_bw, aes(x=species, y=body_mass_g)) 
 
 ```
-We haven't told `ggplot()` what *kind* of plot we want. `ggplot()` uses "geoms" to plot 
+We haven't told `ggplot()` what *kind* of plot we want. So far, we've just told `ggplot()` that we're ready to plot and which data we want it to use. 
+
+*`ggplot()` uses "geom" layers to plot. "Geoms" are ways to represent your data points, [Here is a nice reference](https://rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf) for `ggplot()` plotting, but it can be overwhelming at first.*
+
+Some geoms that you might be interested in are:
+
+- `geom_bar()`: Bar plot
+- `geom_point()`, `geom_jitter()`: Scatter plots
+- `geom_boxplot()`: Boxplot
+- `geom_line()`: Line plot
+- `geom_line()`: 
+
+Let's try plotting our body weight data as a boxplot.
+
+```{r ggplot-boxplot, exercise=T}
+ggplot(data=penguin_chin_gent_bw, aes(x=species, y=body_mass_g)) +
+  geom_boxplot()
+```
+
+Nice! Looking at the data in this way, do you think these two penguins have a significantly different body mass?
+
+We should test it so that we can give the professor a p-value. Let's use that t-test we discussed before. The t-test function is `t.test()` 
+
+*PS. The Student's t-test was invented by a chemist and statistician named William Sealy Gosset at Guinness in the early 1900s. His boss wouldn't let him use his real name when he published the t-test... and so he published under the pseudonym "Student"!*
 
 
-### How is 
+```{r penguin-ttest, exercise=T}
+## Is body_mass_g influenced by species?
+## We can use a similar formula idea as we did for the linear model
+ttest_result <- t.test(body_mass_g ~ species, data=penguin_chin_gent_bw)
+```
+
+Our prof likes things to look aesthetically pleasing when we give them the penguin info. Let's make our box plot look nice!
+
+First we add `colour=species` into the `aes()` section of the `ggplot()` initialization. In this case, we want the colours of the boxplots to change with the species colours.
+
+**Why do we add `colour=` inside `aes()`?  Everything inside `aes()` is influenced by our actual data. Try moving `colour=species` outside `aes()`. What happens?**
+
+Hint: This would look something like:
+
+```{r penguinhint, eval=FALSE, echo=T}
+ggplot(data=penguin_chin_gent_bw, aes(x=species, y=body_mass_g), colour=species) +
+  ...
+```
+
+```{r penguinBox, exercise=T}
+## Let's add some colours to the box plot, and fix the axes labels!
+
+ggplot(data=penguin_chin_gent_bw, aes(x=species, y=body_mass_g, colour=species)) + 
+  geom_boxplot() +
+  xlab("Species") + # changes the x axis label to anything
+  ylab("Body mass (g)") # changes the y axis label to anything
+```
+
+
+Great! Now we know how to do some plots using `ggplot()`. How about we learn how to plot our original linear model data?
+
+## 9. More ggplot2
+
+We originally looked at the relationship of penguin bill length with bill depth. We had plotted the data in a very "simple" way and we didn't really see any patterns. But now we know how to use ggplot to colour plots with info from each species...maybe there's a pattern within each species that we can see?
+
+### Plotting bill length vs depth with ggplot
+
+Let's use a scatter plot to explore our data. Modify this code by updating the `????` to make a scatter plot of penguin bill length by bill depth that has points coloured in by the penguin species.
+
+
+Fix this so that it's just a solution and doesnt print!!!
+```{r penguindots, exercise=T}
+ggplot(data=penguins, aes(x=????, y=????, colour=?????)) + 
+  geom_????()
+```
+```{r penguinsdots-solution}
+ggplot(data=penguins, aes(x=bill_length_mm, y=bill_depth_mm, colour=species)) + 
+  geom_point()
+```
 
 
 ```{r ggplotpenguin, exercise=T}

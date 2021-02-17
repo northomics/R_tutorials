@@ -351,16 +351,68 @@ We originally looked at the relationship of penguin bill length with bill depth.
 Let's use a scatter plot to explore our data. Modify this code by updating the `????` to make a scatter plot of penguin bill length by bill depth that has points coloured in by the penguin species.
 
 
-Fix this so that it's just a solution and doesnt print!!!
-```{r penguindots, exercise=T}
-ggplot(data=penguins, aes(x=????, y=????, colour=?????)) + 
+```{r dots, exercise=TRUE}
+ggplot(data=penguins, 
+       aes(x=????, 
+           y=????, 
+           colour=????)
+       ) + 
   geom_????()
 ```
-```{r penguinsdots-solution}
-ggplot(data=penguins, aes(x=bill_length_mm, y=bill_depth_mm, colour=species)) + 
+
+```{r dots-solution}
+ggplot(data=penguins, 
+       aes(x=bill_length_mm, 
+           y=bill_depth_mm, 
+           colour=species)
+       ) + 
   geom_point()
 ```
 
+
+### Adding our linear model to our plot
+
+Looking at our plot above, there may be some patterns that can be explained by species. We also found this when we completed our linear models. Cool! So, let's add our linear models to our scatter plot. And while we're at it, let's add custom colours to our plots.
+
+Let's go back to our `ggplot2` [cheatsheet](https://rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf). Under the **Two Variables** section, check out `geom_smooth()`. This geom can calculate a linear model and plot it for us, kind of like the `abline()` we used previously. In this case, we can plot it all at once. Let's try it out!
+
+```{r ggplotpenguin2, exercise=T}
+ggplot(data = penguins,
+       aes(x = bill_length_mm,
+       y = bill_depth_mm,
+       colour = species)
+       ) +
+  geom_point() +
+  geom_smooth(method = "lm") # method = "lm" tells ggplot we want to use the linear model function lm()
+
+
+```
+
+Looks good so far, except for a few things. 
+
+1. `geom_smooth` adds an error estimate from the linear model by default (those grey ribbons around the lines). It's not really helpful for us here, so we should remove that ribbon for now. 
+2. We should be more creative with the colours we pick. 
+3. Just in case anyone looking at our graph has a hard time telling colours apart, let's also change the points in our plot to shapes that match species. 
+4. We should update our axes labels to be more informative. 
+5. We keep getting these warnings that tell us we have NAs and that ggplot is removing them... we probably shouldn't ignore these warnings and should investigate.
+
+Let's attack these points one at a time. 
+
+
+## 10. Perfecting our plot
+
+### 1. Removing error estimate from geom_smooth
+
+
+### 2. Updating colours 
+
+### 3. Adding shapes
+
+### 4. Changing axes labels
+
+### 5. Dealing with warnings 
+
+### 6. Our final plot!
 
 ```{r ggplotpenguin, exercise=T}
 library(ggplot2)
@@ -384,8 +436,8 @@ library(ggplot2)
         plot.title.position = "plot",
         plot.caption = element_text(hjust = 0, face= "italic"),
         plot.caption.position = "plot"))
-
 ```
+
 
 
 ## Your homework 
@@ -402,8 +454,11 @@ Now that we've learned how to:
 Your task:
 Come up with your own hypothesis using the penguin dataset and write it out. Choose a statistical test (*hint: it can be one we used already*). Complete your statistical test. Visualize your data using `ggplot2`. 
 
+Some ideas to get you started:
+  - Does an island have an influence on penguin species? For example, do Adelie penguins that live on different islands vary in some sort of measurement? 
+  - Does the sex of a penguin influence a measurement? 
 
-```{r testing-stats, exercise=T}
+```{r testing-stats, exercise=T, exercise.lines=20}
 ### Use this space to complete your exercise.
 
 

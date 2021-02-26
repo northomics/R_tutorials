@@ -5,11 +5,12 @@ runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-library(learnr)
-library(tidyverse)
-library(palmerpenguins)
+require(learnr)
+#library(palmerpenguins)
+require(tidyverse)
 # call the data from the package
-data(package = 'palmerpenguins') 
+#data(package = 'palmerpenguins') 
+penguins <- read.csv("penguins.csv")
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -84,10 +85,10 @@ knitr::include_graphics("images/penguins.png")
 ```{r dataloading, exercise=TRUE}
 # install the package, normally required
 # install.packages("palmerpenguins")
-# load the package
-library(palmerpenguins)
-# call the data from the package
-data(package = 'palmerpenguins') 
+# load the package, normally required
+#library(palmerpenguins)
+# call the data from the package, normally required but is already loaded for you today!
+#data(package = 'palmerpenguins') 
 head(penguins)
 ```
 
@@ -235,8 +236,8 @@ hote: We're using functions `filter()` and `select()`. These functions are from 
 Today we want to filter for Chinstrap OR (`|`) Gentoo penguins. It might seem like we're interested in Chinstrap AND (`&`) Gentoo penguins, but in programming logic, that is impossible. **Let's try both and see what happens.**.
 
 ```{r filter, exercise=TRUE}
-## loading ALL tidyverse packages at once because we'll be using many of them
-library(tidyverse)
+## loading ALL tidyverse packages at once because we'll be using many of them, normaly required
+#library(tidyverse)
 ## filtering for Chinstrap AND Gentoo penguins from the species column of penguins
 penguin_chin_gent <- filter(penguins, species == "Chinstrap" & species == "Gentoo")
 head(penguin_chin_gent)
@@ -352,8 +353,7 @@ Let's use a scatter plot to explore our data. Modify this code by updating the `
 
 
 ```{r dots, exercise=TRUE}
-ggplot(data=penguins, 
-       aes(x=????, 
+ggplot(data=penguins,
            y=????, 
            colour=????)
        ) + 
@@ -403,39 +403,152 @@ Let's attack these points one at a time.
 
 ### 1. Removing error estimate from geom_smooth
 
+To remove these unnecessary ribbons, we need to tell `geom_smooth()` that we don't want them. 
+
+```{r nose, exercise=T}
+(no_ribbon <- ggplot(data = penguins,
+       aes(x = bill_length_mm,
+       y = bill_depth_mm,
+       colour = species)
+       ) +
+  geom_point() +
+  geom_smooth(method = "lm", se=FALSE)) #se = FALSE tells ggplot
+```
+
 
 ### 2. Updating colours 
 
+One thing I **love** about making plots is making them look fun and pretty. Problem is...I'm not very artistically inclined. I use a lot of different websites for plot color theme inspiration. One of my favourites is [coolors.co](https://coolors.co). It randomly generates complementary colour palettes and I use this all the time. Coolors gives us colours in HEX codes that we can use, or we can type in colours manually (here's a [link to all the colours R understands](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf))
+
+Let's make our plot pretty both ways: using HEX codes and the names of colours. We're going to use `scale_colour_manual()` to tell ggplot that we want to manually change the colours.
+
+```{r colourchange, exercise=T}
+(new_colours <- ggplot(data = penguins,
+       aes(x = bill_length_mm,
+       y = bill_depth_mm,
+       colour = species)
+       ) +
+  geom_point() +
+  geom_smooth(method = "lm", se=FALSE) + #se = FALSE tells ggplot
+  scale_colour_manual(values=c("royalblue", "orange", "limegreen")))
+```
+I like the blue and orange...but I'm not so sure that the green goes. I'm going to use [coolors.co](https://coolors.co) to help me out!
+
+
+
+```{r colourpalette, echo = FALSE, out.width = "100%", fig.cap = "Colour palette by coolors."}
+knitr::include_graphics("images/colour_pal.png")
+```
+I like this palette that coolors suggested. That combination of letters and numbers is the colour's HEX code! We have so many more colour options using these codes. We can input these codes instead of the colour name using the exact same ggplot function.  Feel free to edit these HEX codes as you'd like!
+
+```{r hexchange, exercise=T}
+(new_colours <- ggplot(data = penguins,
+       aes(x = bill_length_mm,
+       y = bill_depth_mm,
+       colour = species)
+       ) +
+  geom_point() +
+  geom_smooth(method = "lm", se=FALSE) + #se = FALSE tells ggplot
+  scale_colour_manual(values=c("#1E3888", "#FFAD69", "#47A8BD"))) # hex codes start with a "#"
+```
+
+
 ### 3. Adding shapes
+
+It's useful to not only change the colours of the points, but also have shapes reflect the data as well. This makes our figures more accessible! We have to add an extra option to `aes()`. In this case, we add `shape = species`.
+
+```{r shapechange, exercise=T}
+(new_colours <- ggplot(data = penguins,
+       aes(x = bill_length_mm,
+       y = bill_depth_mm,
+       colour = species,
+       shape = sex, 
+       group = species) 
+       ) +
+  geom_point() +
+  geom_smooth(method = "lm", se=FALSE)) + #se = FALSE tells ggplot
+  scale_colour_manual(values=c("#1E3888", "#FFAD69", "#47A8BD")) # hex codes start with a "#"
+```
+
+However, what if we're interested in adding more information to our plot? What about if we wanted to look at how the penguin's sex is reflected in these bill measurements? We would tell ggplot to change either the colour or the shape  from `species` to `sex`. Try it out in the above plot. What happens?
+
+Yikes.I bet something didn't look so right when we added that extra grouping. That's because our original `ggplot(data = penguins,aes(x = bill_length_mm, y = bill_depth_mm,colour = species,shape = sex)` call told ggplot to use of that information for the rest of the plot. Our linear model is now trying to add information for both sex and species, making it a little fuzzy. We can force ggplot to group any statistical functions by species while allowing us to colour/shape the rest of the data how we want. To do this, we add `group = species` to our `aes()` function.  (*This may be useful for your mini-homework*)
+
+```{r forcegroup, exercise=T}
+(new_colours <- ggplot(data = penguins,
+       aes(x = bill_length_mm,
+       y = bill_depth_mm,
+       colour = sex,
+       shape = species, 
+       group = species) 
+       ) +
+  geom_point() +
+  geom_smooth(method = "lm", se=FALSE)) + #se = FALSE tells ggplot
+  scale_colour_manual(values=c("#1E3888", "#FFAD69", "#47A8BD")) # hex codes start with a "#"
+```
+
+Now we can see how ignoring those warnings is coming back to haunt us... What do you think is happening here? Let's discuss
 
 ### 4. Changing axes labels
 
+We're already learned how to do this **hint `xlab()` might ring a bell...**.
+I'll leave it up to you to rename our axes to appropriate names. 
+
+```{r axes, exercise=T}
+(axes <- ggplot(data = penguins,
+       aes(x = bill_length_mm,
+       y = bill_depth_mm,
+       colour = species,
+       shape = sex, 
+       group = species) 
+       ) +
+  geom_point() +
+  geom_smooth(method = "lm", se=FALSE) + #se = FALSE tells ggplot
+  scale_colour_manual(values=c("#1E3888", "#FFAD69", "#47A8BD"))) # hex codes start with a "#"
+```
+
+
 ### 5. Dealing with warnings 
+
+Back to those warnings...  ggplot is telling us that our dataset is incomplete and contains `NA`s. Researchers use `NA`s when recording data if they were unable to take the measurement, or the measurement is missing for some reason. Keeping these `NA`s is not always helpfor for us. Thankfully we have a function that can help us remove any rows (observations) with `NA`s. This function is `complete_cases()`.
+
+```{r completecases, exercise=T}
+penguins_removeNA <- drop_na(penguins)
+(axes <- ggplot(data = penguins_removeNA,
+       aes(x = bill_length_mm,
+       y = bill_depth_mm,
+       colour = species,
+       shape = sex, 
+       group = species) 
+       ) +
+  geom_point() +
+  geom_smooth(method = "lm", se=FALSE) + #se = FALSE tells ggplot
+  scale_colour_manual(values=c("#1E3888", "#FFAD69", "#47A8BD"))) # hex codes start with a "#"
+```
+Yay! We've removed our warnings! 
 
 ### 6. Our final plot!
 
-```{r ggplotpenguin, exercise=T}
-library(ggplot2)
-(bill_len_dep <- ggplot(data = penguins,
-                         aes(x = bill_length_mm,
-                             y = bill_depth_mm,
-                             group = species)) +
-  geom_point(aes(color = species, 
-                 shape = species),
-             size = 3,
-             alpha = 0.8) +
-  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
-  theme_minimal() +
-  scale_color_manual(values = c("darkorange","purple","cyan4")) +
-  labs(x = "Bill length (mm)",
+Here's an example of a final plot that went a bit further than what we did in our steps above. 
+
+What has been added to this plot? If you change some options around, what happens? You might want to use some of these options for your "homework".
+
+```{r finalplot, exercise=T}
+
+(final <- ggplot(data = penguins_removeNA,
+       aes(x = bill_length_mm,
+       y = bill_depth_mm,
+       colour = species,
+       shape = species, 
+       group = species)) +
+  geom_point(size = 3, alpha = 0.8) +
+  geom_smooth(method = "lm", se=FALSE) + #se = FALSE tells ggplot
+  scale_colour_manual(values=c("#1E3888", "#FFAD69", "#47A8BD")) + # hex codes start with a "#"
+ labs(x = "Bill length (mm)",
        y = "Bill depth (mm)",
        color = "Penguin species",
-       shape = "Penguin species") +
-  theme(legend.position = c(0.85, 0.15),
-        legend.background = element_rect(fill = "white", color = NA),
-        plot.title.position = "plot",
-        plot.caption = element_text(hjust = 0, face= "italic"),
-        plot.caption.position = "plot"))
+       shape = "Penguin species")+
+   theme_bw())
 ```
 
 
@@ -464,3 +577,5 @@ Some ideas to get you started:
 
 
 ```
+
+Once you're done, save your code, or take a screenshot of the code and your plot. You can show it off to all of us! 

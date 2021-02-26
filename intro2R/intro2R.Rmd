@@ -10,6 +10,7 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 library(learnr)
 knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
 ```
 
 ## Intro to R
@@ -120,17 +121,20 @@ The first time you need to use a CRAN package, you install it using `install.pac
 
 Bioconductor packages use a different function for installation. See the exercise below. You will most likely use a lot of Bioconductor packages, like DESeq2. DESeq2 is important for differential expression analysis!
 
-```{r packages, exercise=T}
+We don't need to install any packages online, but this is how you would do it if you were installing them on your own computer.
+
+```{r packages, exercise=F, eval=F, echo=T}
 ## CRAN packages 
-# Let's install ggplot2. We will be using this for data visualization. layer on. 
+# Let's install ggplot2. We will be using this for data visualization later on. 
+# You only need to install these packages if you're using them on your own computer
 install.packages("ggplot2")
-load(ggplot2)
+library(ggplot2)
 
 ## Bioconductor packages
 # This is how you install Bioconductor itself
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install(version = "3.12")
+BiocManager::install(version = "3.10")
 # This is how you install Bioconductor packages
 BiocManager::install("DESeq2")
 # you load the packages the same way as the CRAN packages
@@ -139,9 +143,11 @@ library(DESeq2)
 
 ### Getting help with functions
 
-Sometimes (ok...often) I forget how exactly to use a function. Luckily there is built in help within R that walks us through what a function does, how to use it, and includes examples. All you need to do is type `?` before your function. Let's try it out
+Sometimes (ok...often!) I forget how exactly to use a function. Luckily there is built in help within R that walks us through what a function does, how to use it, and includes examples. All you need to do is type `?` before your function. 
 
-```{r help, exercise=T}
+*This only works on your own computer, but is here for reference.*
+
+```{r help, exercise=F, eval=F, echo=T}
 ?ggplot()
 ?plot()
 ?seq()
@@ -163,7 +169,7 @@ Here are some functions that you'll need to use often:
 - `write.csv()`
 
 
-**Exercise:** Let's tak *7 mins* to explore these functions do and we'll discuss them :) 
+**Exercise:** Let's take *7 mins* to explore these functions using Google and we'll discuss them together :) 
 
 ## Test your knowledge
 
@@ -181,3 +187,4 @@ quiz(
 )
 ```
 
+After we're all comfortable with R lingo and how R works, we'll move on to our [next tutorial](https://caitsimop.shinyapps.io/statsR/). 

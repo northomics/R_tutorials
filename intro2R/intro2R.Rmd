@@ -1,5 +1,6 @@
 ---
 title: "Intro to R"
+author: "Caitlin Simopoulos"
 output: 
   learnr::tutorial:
     progressive: true
@@ -9,8 +10,8 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 library(learnr)
-knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## Intro to R
@@ -64,8 +65,7 @@ log2(2.9)
 
 ### Using variables in R
 
-When you're writing code, you'll want to assign certain numbers as variables for use.
-
+When you're writing code, you'll want to assign certain numbers as variables for use. In R we assign variables using `<-` and not `=`. `=` is reserved for arguments/parameters inside of functions (more on that below).
 ```{r variables, exercise=TRUE}
 a <- 2+2
 b <- 2*3
@@ -74,7 +74,7 @@ a + b
 
 ### Test your knowledge
 
-Try writing code where `x=20` and `y=50`. Then subtract `x` from `y`.
+Try writing code where **x equals 20** and **y equals 50**. Then subtract `x` from `y`.
 
 ```{r variabletest, exercise = TRUE}
 
@@ -94,8 +94,8 @@ Some important lingo:
 
 - **function**: part of a program that performs a task
 - **object**: how data is stored in R
-- **argument**: options that are given to a function 
-- **parameter**: another word for argument
+- **argument**: objects that are given to a function 
+- **parameter**: options in an argument
 
 ```{r function, exercise=T}
 # Comments (lines prefaced with a #) are ignored by R but are useful for you
@@ -104,13 +104,13 @@ Some important lingo:
 b <- seq(from = 2, to = 10, by = 2)
 # b is the object
 # seq is the function
-# from, to, by are the arguments
+# from, to, by are the parameters
 print(b)
 ```
 
 ### Packages and libraries
 
-"Base" R is pretty basic... that is, it doesn't have that many biology specific functions that we often need. The good this is that researchers often write functions and package them up in an R "package". You can install these packages if you need them.
+"Base" R is pretty basic... that is, it doesn't have that many biology specific functions that we often need. The good news this is that researchers often write functions and package them up in an R "package". You can install these packages if you need them.
 
 There are two main package repositories you'll use:
 
@@ -171,6 +171,19 @@ Here are some functions that you'll need to use often:
 
 **Exercise:** Let's take *7 mins* to explore these functions using Google and we'll discuss them together :) 
 
+### Writing your own functions
+
+There will come a day in your R journey when you'll want to do something and the function doesnt exist. Or, you want to connect two or more functions together into a single function to make your life easier. When this happens, you'll want to make your own function. 
+
+We aren't going to go into too much detail about writing your own functions in this tutorial, but I wanted to introduce it to you.
+
+```{r yourfunction, echo=T}
+nameofyourfunction <- function(arguments, and, parameters){
+  x <- whateveryouwant(arguments)  
+  y <- addanythinghere(and,paramters,x)
+ return(y)
+}
+```
 ## Test your knowledge
 
 Let's test what we went over so far!
@@ -187,4 +200,7 @@ quiz(
 )
 ```
 
+
+
 After we're all comfortable with R lingo and how R works, we'll move on to our [next tutorial](https://caitsimop.shinyapps.io/statsR/). 
+

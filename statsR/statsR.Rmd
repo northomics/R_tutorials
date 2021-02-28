@@ -1,18 +1,17 @@
 ---
 title: "Stats in R"
+author: "Caitlin Simopoulos"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-require(learnr)
-#library(palmerpenguins)
-require(tidyverse)
-# call the data from the package
-#data(package = 'palmerpenguins') 
-penguins <- read.csv("penguins.csv")
-knitr::opts_chunk$set(echo = FALSE)
+library(learnr)
+library(tidyverse)
+library(palmerpenguins)
+knitr::opts_chunk$set(echo = F)
 ```
+
 
 ## Tutorial outline
 
@@ -70,10 +69,10 @@ To do this, we need to estimate a line of best fit than minimizes error... this 
 
 We have options for loading data. 
 
-1. We read use `read.csv()` to read in data from a file.  
-2. We can use a built-in dataset from an R package.
+1. We can use `read.csv()` to read in data from a file.  
+2. We can use a built-in data set from an R package.
 
-Today we'll use a built in dataset called the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/index.html) dataset. 
+Today we'll use a built in dat set called the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/index.html) data set. We will use `read.csv()` in the next tutorial.
 
 
 ```{r penguin, echo = FALSE, out.width = "100%", fig.cap = "Artwork by @allison_horst."}
@@ -82,15 +81,40 @@ knitr::include_graphics("images/penguins.png")
 
 
 
-```{r dataloading, exercise=TRUE}
+```{r dataloading, exercise=TRUE, cache=T}
 # install the package, normally required
 # install.packages("palmerpenguins")
 # load the package, normally required
 #library(palmerpenguins)
-# call the data from the package, normally required but is already loaded for you today!
-#data(package = 'palmerpenguins') 
+# call the data from the package
+data(package = 'palmerpenguins') 
+# Let's check out what the data looks like
 head(penguins)
 ```
+
+### How to manipulate data
+
+Sometimes we need to access specific data from the data set because we aren't interested in the entire thing. R let's us manipulate data a number of different ways but we'll go over some of the most important ones.
+
+- `data[rows,columns]` 
+  - e.g. `data[1:20, c(2,5,6)]` would give us rows 1-20 and columns 2, 5, 6, of "data"
+- `data$column_name`
+  - e.g. `data$species` would give us the column names "species" in "data"
+  
+Play around with your `penguins` data set in here with these functions. I'll give you a head start
+
+
+```{r manip_sandbox, exercise=T, exercise.lines=20}
+### Use this space to complete your exercise.
+penguins[1:4,c(2:4)]
+
+penguins$island 
+
+## your turn! :)
+
+
+```
+
 
 We will focus on two penguin measurements for today:
 
@@ -126,7 +150,7 @@ Try using this code. What does `summary()` give us? What does `abline()` do?
 ```{r linearmodel, exercise=TRUE}
 lm1 <- lm(formula = bill_length_mm ~ bill_depth_mm, data = penguins)
 summary(lm1)
-plot(penguins$bill_length_mm, penguins$bill_depth_mm, 
+plot(penguins$bill_depth_mm, penguins$bill_length_mm, 
      main="Bill length vs bill depth", xlab = "Bill length (mm)", ylab = "
      Bill depth (mm)")
 abline(lm1, col="purple")
@@ -231,34 +255,37 @@ You will use logical operators often in R programming. Here are some examples:
 - `>=`: greater or equal to
 - `<=`: less than or equal to
 
-hote: We're using functions `filter()` and `select()`. These functions are from the [`tidyverse`](https://tidyverse.tidyverse.org) and use special "syntax".  Most `tidyverse` functions **always** consider the first argument as the data, so we don't need explicitly write `data = penguins`. Fun!
+Note: We're using functions `filter()` and `select()`. These functions are from the [`tidyverse`](https://tidyverse.tidyverse.org) and use special "syntax".  Most `tidyverse` functions **always** consider the first argument as the data, so we don't need explicitly write `data = penguins`. Fun!
 
 Today we want to filter for Chinstrap OR (`|`) Gentoo penguins. It might seem like we're interested in Chinstrap AND (`&`) Gentoo penguins, but in programming logic, that is impossible. **Let's try both and see what happens.**.
 
-```{r filter, exercise=TRUE}
+```{r filter, exercise=T}
 ## loading ALL tidyverse packages at once because we'll be using many of them, normaly required
 #library(tidyverse)
 ## filtering for Chinstrap AND Gentoo penguins from the species column of penguins
-penguin_chin_gent <- filter(penguins, species == "Chinstrap" & species == "Gentoo")
-head(penguin_chin_gent)
+penguin_chin_gent_AND <-filter(penguins, species == "Chinstrap" & species == "Gentoo")
+head(penguin_chin_gent_AND)
 
 ## filtering for Chinstrap OR Gentoo penguins from the species column of penguins
-penguin_chin_gent <- filter(penguins, species == "Chinstrap" | species == "Gentoo")
+penguin_chin_gent_OR <- filter(penguins, species == "Chinstrap" | species == "Gentoo")
 # print the first couple rows
-head(penguin_chin_gent)
+head(penguin_chin_gent_OR)
 ```
 
 Now, we're only interested in the bodyweight of the penguins. We should make an even smaller dataset that only includes the body weight information of Gentoo and Chinstrap penguins. 
 
+```{r test, echo=F}
+penguin_chin_gent_OR <- filter(penguins, species == "Chinstrap" | species == "Gentoo")
+```
+
 ```{r select, exercise=T}
 ## what are the column names of our dataset again? Let's check
-colnames(penguin_chin_gent)
+colnames(penguin_chin_gent_OR)
 
-## OK, so body weight is callled "body_mass_g". Let's select body_mass_g and species so that we
+## OK, so body weight is found under column "body_mass_g". Let's select body_mass_g and species so that we
 ## can calculate the mean body weight of each species.
-penguin_chin_gent_bw <- select(penguin_chin_gent, species, body_mass_g)
+penguin_chin_gent_bw <- dplyr::select(penguin_chin_gent_OR, species, body_mass_g)
 head(penguin_chin_gent_bw)
-tail(penguin_chin_gent_bw)
 
 ## what does this function do?
 count(penguin_chin_gent_bw, species)
@@ -279,6 +306,10 @@ knitr::include_graphics("images/ggplot2_masterpiece.png")
 ```
 
 First we need to initialize a `ggplot`. This tells ggplot which data we'd like to plot and which features we want to plot on the x and y axes. 
+
+```{r bw, echo=F}
+penguin_chin_gent_bw <- dplyr::select(penguin_chin_gent_OR, species, body_mass_g)
+```
 
 ```{r ggplot-intro, exercise=T}
 # ggplot2 is already loaded with tidyverse
@@ -316,6 +347,7 @@ We should test it so that we can give the professor a p-value. Let's use that t-
 ## Is body_mass_g influenced by species?
 ## We can use a similar formula idea as we did for the linear model
 ttest_result <- t.test(body_mass_g ~ species, data=penguin_chin_gent_bw)
+ttest_result
 ```
 
 Our prof likes things to look aesthetically pleasing when we give them the penguin info. Let's make our box plot look nice!
@@ -532,6 +564,11 @@ Yay! We've removed our warnings!
 Here's an example of a final plot that went a bit further than what we did in our steps above. 
 
 What has been added to this plot? If you change some options around, what happens? You might want to use some of these options for your "homework".
+
+
+```{r removeNA, echo=F}
+penguins_removeNA <- drop_na(penguins)
+```
 
 ```{r finalplot, exercise=T}
 

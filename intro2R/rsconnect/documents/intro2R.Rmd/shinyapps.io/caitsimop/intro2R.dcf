@@ -5,8 +5,8 @@ account: caitsimop
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3698269
-bundleId: 4272014
+bundleId: 4287520
 url: https://caitsimop.shinyapps.io/intro2R/
-when: 1614276907.23458
+when: 1614635509.9674
 asMultiple: FALSE
 asStatic: FALSE

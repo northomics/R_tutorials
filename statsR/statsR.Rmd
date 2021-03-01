@@ -1,5 +1,7 @@
 ---
-title: "Stats in R"
+title: "An introduction to stats in R"
+author: "Caitlin Simopoulos"
+date:  "Last updated on `r Sys.Date()`"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
@@ -91,6 +93,30 @@ knitr::include_graphics("images/penguins.png")
 #data(package = 'palmerpenguins') 
 head(penguins)
 ```
+
+### How to manipulate data
+
+Sometimes we need to access specific data from the data set because we aren't interested in the entire thing. R let's us manipulate data a number of different ways but we'll go over some of the most important ones.
+
+- `data[rows,columns]` 
+  - e.g. `data[1:20, c(2,5,6)]` would give us rows 1-20 and columns 2, 5, 6, of "data"
+- `data$column_name`
+  - e.g. `data$species` would give us the column names "species" in "data"
+  
+Play around with your `penguins` data set in here with these functions. I'll give you a head start
+
+
+```{r manip_sandbox, exercise=T, exercise.lines=20}
+### Use this space to complete your exercise.
+penguins[1:4,c(2:4)]
+
+penguins$island 
+
+## your turn! :)
+
+
+```
+
 
 We will focus on two penguin measurements for today:
 
@@ -236,7 +262,7 @@ hote: We're using functions `filter()` and `select()`. These functions are from 
 Today we want to filter for Chinstrap OR (`|`) Gentoo penguins. It might seem like we're interested in Chinstrap AND (`&`) Gentoo penguins, but in programming logic, that is impossible. **Let's try both and see what happens.**.
 
 ```{r filter, exercise=TRUE}
-## loading ALL tidyverse packages at once because we'll be using many of them, normaly required
+## loading ALL tidyverse packages at once because we'll be using many of them, normally required
 #library(tidyverse)
 ## filtering for Chinstrap AND Gentoo penguins from the species column of penguins
 penguin_chin_gent <- filter(penguins, species == "Chinstrap" & species == "Gentoo")
@@ -250,7 +276,12 @@ head(penguin_chin_gent)
 
 Now, we're only interested in the bodyweight of the penguins. We should make an even smaller dataset that only includes the body weight information of Gentoo and Chinstrap penguins. 
 
-```{r select, exercise=T}
+```{r subsetfallback, echo=F}
+penguin_chin_gent <- filter(penguins, species == "Chinstrap" | species == "Gentoo")
+```
+
+
+```{r select, exercise=T, exercise.setup="subsetfallback"}
 ## what are the column names of our dataset again? Let's check
 colnames(penguin_chin_gent)
 
@@ -266,7 +297,10 @@ count(penguin_chin_gent_bw, species)
 
 Now that we have our dataset, how about we plot some data???
 
-
+```{r bwfallback, echo=F}
+penguin_chin_gent <- filter(penguins, species == "Chinstrap" | species == "Gentoo")
+penguin_chin_gent_bw <- select(penguin_chin_gent, species, body_mass_g)
+```
 
 ## 8. Intro to `ggplot2`
 
@@ -316,6 +350,7 @@ We should test it so that we can give the professor a p-value. Let's use that t-
 ## Is body_mass_g influenced by species?
 ## We can use a similar formula idea as we did for the linear model
 ttest_result <- t.test(body_mass_g ~ species, data=penguin_chin_gent_bw)
+ttest_result
 ```
 
 Our prof likes things to look aesthetically pleasing when we give them the penguin info. Let's make our box plot look nice!
@@ -532,6 +567,11 @@ Yay! We've removed our warnings!
 Here's an example of a final plot that went a bit further than what we did in our steps above. 
 
 What has been added to this plot? If you change some options around, what happens? You might want to use some of these options for your "homework".
+
+```{r removeNAfallback, echo=F}
+penguins_removeNA <- drop_na(penguins)
+```
+
 
 ```{r finalplot, exercise=T}
 

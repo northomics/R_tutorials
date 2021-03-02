@@ -41,3 +41,6 @@ vignettes/*.pdf
 
 ## Mac
 .DS_store
+
+## rsconnect for shinyapps.io
+rsconnect*

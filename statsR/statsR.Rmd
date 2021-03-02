@@ -133,9 +133,9 @@ Ok, let's look at the data to see if a linear model looks reasonable...
 ### Simple visual check
 
 ```{r penguincor, exercise=TRUE}
-plot(penguins$bill_length_mm, penguins$bill_depth_mm, 
-     main="Bill length vs bill depth", xlab = "Bill length (mm)", ylab = "
-     Bill depth (mm)")
+plot(penguins$bill_depth_mm, penguins$bill_length_mm,
+     main="Bill length vs bill depth", xlab = "Bill depth (mm)", ylab = "
+     Bill lengh (mm)")
 ```
 
 Hmmm... not sure yet. But! Remember! There are **three** types of penguins in the data. Maybe we'll see some patterns later on...
@@ -152,9 +152,9 @@ Try using this code. What does `summary()` give us? What does `abline()` do?
 ```{r linearmodel, exercise=TRUE}
 lm1 <- lm(formula = bill_length_mm ~ bill_depth_mm, data = penguins)
 summary(lm1)
-plot(penguins$bill_length_mm, penguins$bill_depth_mm, 
-     main="Bill length vs bill depth", xlab = "Bill length (mm)", ylab = "
-     Bill depth (mm)")
+plot(penguins$bill_depth_mm, penguins$bill_length_mm,
+     main="Bill length vs bill depth", xlab = "Bill depth (mm)", ylab = "
+     Bill lengh (mm)")
 abline(lm1, col="purple")
 ```
 
@@ -545,7 +545,7 @@ I'll leave it up to you to rename our axes to appropriate names.
 
 ### 5. Dealing with warnings 
 
-Back to those warnings...  ggplot is telling us that our dataset is incomplete and contains `NA`s. Researchers use `NA`s when recording data if they were unable to take the measurement, or the measurement is missing for some reason. Keeping these `NA`s is not always helpfor for us. Thankfully we have a function that can help us remove any rows (observations) with `NA`s. This function is `complete_cases()`.
+Back to those warnings...  ggplot is telling us that our dataset is incomplete and contains `NA`. Researchers use `NA` when recording data if they were unable to take the measurement, or the measurement is missing for some reason. Keeping these `NA` is not always helpful to us. Thankfully we have a function that can help us remove any rows (observations) with `NA`. This function is `drop_na()`.
 
 ```{r completecases, exercise=T}
 penguins_removeNA <- drop_na(penguins)

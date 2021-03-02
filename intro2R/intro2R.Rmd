@@ -31,6 +31,8 @@ You can run code in this tutorial directly, or you can choose to run it directly
 
 Ready? Let's go!
 
+*If you're interested, source code can be found on [GitHub](https://github.com/northomics/R_tutorials/tree/main/intro2R)*
+
 
 ### What is R?
 

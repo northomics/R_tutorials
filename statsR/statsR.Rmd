@@ -35,6 +35,8 @@ By the end of this tutorial you will learn how to:
     - scatterplot 
     - linear regression
 
+*If you're interested, source code can be found on [GitHub](https://github.com/northomics/R_tutorials/tree/main/statsR)*
+
 ## 1. Linear regression intro
 
 Now that we've got the hang of some R functions, let's do some real analysis!

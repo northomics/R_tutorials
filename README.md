@@ -1,4 +1,6 @@
 # Introductory tutorials for learning R
+*Caitlin Simopoulos* 
+
 
 Tutorials originally written for TMM3009 Rotations 2021.
 

@@ -44,3 +44,6 @@ vignettes/*.pdf
 
 ## rsconnect for shinyapps.io
 rsconnect*
+
+## .zip for rstudio server
+*.zip

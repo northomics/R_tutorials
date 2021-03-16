@@ -141,18 +141,32 @@ We should probably do a quick quality control check up of our data to make sure 
 First we want to look at the mean abundances of proteins across all samples. While we expect that specific protein gene expression will change when the microbiome is treated with kestose, there shouldn't be much difference when we consider all identified proteins. If there is, there may be a technical issue where we are measuring too much or too little of the protein. We can fix this with "normalization", but we have to identify the problem first. 
 
 
-```{r selectbkp, echo=F}
+```{r codebkp, echo=F}
+## all exercised rely on this code
 df <- read.table(file="https://caitlinsimopoulos.com/media/proteinGroups.txt", header=TRUE, sep="\t") 
 maxlfq <- df %>% dplyr::select(Protein.IDs, starts_with("LFQ.intensity."))
+log_maxlfq <- maxlfq %>% dplyr::select(-Protein.IDs)
+log_maxlfq <- log2(log_maxlfq+1)
+log_maxlfq$protein_id <- c(1:nrow(log_maxlfq))
+log_maxlfq_long <- log_maxlfq %>% pivot_longer(!protein_id, names_to="Samples", values_to="log2_MaxLFQ")
+missing_values <- log_maxlfq_long %>%
+        mutate(is.missing = log2_MaxLFQ == 0) %>%
+        ## check to see which are missing. If they are missing, we'll see a "TRUE
+        group_by(Samples, is.missing) %>%
+    summarise(count = n())
+missing_percent <- missing_values %>%
+        mutate(Percent = count/nrow(log_maxlfq)*100) 
 ```
 
 Before we plot the data to make sure everything looks ok, we need to transform the data by log~2~. We log transform data to reduce the contribution that really highly or lowly abundant proteins might have on any statistical analyses we may do. We can choose any base for logging the data, but biologists often choose 2 because it is more "interpretable", but it is really up to the researcher. 
 
 R has a built in command for log~2~: `log2`. We want to log all the columns in our maxlfq data frame other than the Protein.IDs column. We can use `select` to ignore a column. Check out how we'd do this:
 
-```{r log2, exercise=TRUE, exercise.setup="selectbkp"}
-log_maxlfq <- maxlfq %>% dplyr::select(-Protein.IDs) %>% log2()
+```{r log2, exercise=TRUE, exercise.setup="codebkp"}
+log_maxlfq <- maxlfq %>% dplyr::select(-Protein.IDs) 
+log_maxlfq <- log2(log_maxlfq+1)
 # pay attention to how we can use %>% to link multiple functions together
+head(log_maxlfq)
 ```
 
 Once we link the data, it's time to plot! Let's think back to our `ggplot` tutorial. We have to tell `ggplot` the `x` and `y` axis...but our data isn't set up like this. We have a lot of columns and we need to plot all at once. In otherwords, we have **wide** data right now, but we need **long** data.
@@ -162,24 +176,74 @@ Humans **love** wide data. Just think of how we would set up any table. It makes
 *PS You can also use `pivot_wider()` to turn your data frames back into a more human-friendly format!*
 
 
-```{r longformat, exercise=TRUE, exercise.setup="log2"}
-# let's 
+```{r longformat, exercise=TRUE, exercise.setup="codebkp"}
 colnames(log_maxlfq)
-log_maxlfq_long <- log_maxlfq %>% pivot_longer(everything(), names_to="Samples", values_to="log2_MaxLFQ")
+# we actually want to include a column that represents our protein IDs. we can just include a number 
+# that we can reference back to if we want
+# for example, "1" will mean the first protein group (the first row), "2", will mean the 2nd, etc
+log_maxlfq$protein_id <- c(1:nrow(log_maxlfq))
+log_maxlfq_long <- log_maxlfq %>% pivot_longer(!protein_id, names_to="Samples", values_to="log2_MaxLFQ")
+## we're telling pivot_longer to keep "protein_id". We'll need this in the future. 
+head(log_maxlfq_long)
 ```
 
 Once we're in "long format", we can plot our data using the methods we learned last tutorial.
 
-```{r proteinexp, exercise=TRUE, exercise.setup="longformat"}
+```{r proteinexp, exercise=TRUE,  exercise.setup="codebkp"}
 
-
+(mean_abundance <- ggplot(log_maxlfq_long, aes(x = Samples, y=log2_MaxLFQ)) + 
+        geom_boxplot())
+#let's keep it simple for now and keep this plot "boring" looking, but feel free to add colour to spice it up         
 
 ```
 
+OK, this is normal! It looks like each sample is relatively similar and there are no "obvious" outliers!
+
+But check out the points at the bottom... what are those?
+
+**Let's dicuss.**
+
 ### Missing values
 
+Another important thing to check is the number of missing values. Because of how mass spec data is acquired, it is "common" to encounter many missing values (represented as 0s or NAs in our data). However, missing values make it difficult to complete data analysis, and an excess of missing values in a sample may indicate that something went wrong. Therefore, we should check how many missing values each sample has to make sure that all our samples look "good".
+
+```{r missingval, exercise = T,  exercise.setup="codebkp"}
+
+
+missing_values <- log_maxlfq_long %>%
+        mutate(is.missing = log2_MaxLFQ == 0) %>%
+        ## check to see which are missing. If they are missing, we'll see a "TRUE
+        group_by(Samples, is.missing) %>% ##  
+        summarise(count = n()) 
+## this means we are counting the number of times a protein is missing or NOT missing in each Sample
+
+missing_values
+
+## let's transform these into percentages
+
+missing_percent <- missing_values %>%
+        mutate(Percent = count/nrow(log_maxlfq)*100) 
+        # creating a column that is the total # of proteins for calculating percentages
+missing_percent
+
+```
+
+Now that we've counted how many missing values there are, we can plot it using `ggplot()` to see if there are any samples with more missing values than the others!
+
+Let's plot the percentage of missing values. To do that, we'll calculate the percentage of missing AND present values, and then create a data frame to store it in.
+
+
+```{r percplot, exercise = T, exercise.setup="codebkp"}
+(percentage.plot <- ggplot(missing_percent, aes(x=Samples, y=Percent,fill = is.missing)) +
+         geom_bar(stat = 'identity') +
+        coord_flip()  + #makes it a horizontal bar chart
+        scale_fill_manual(name = "", # this removes the legend name
+                        values = c('steelblue', 'tomato3'), 
+                        labels = c("Present", "Missing")))
+
+```
 ## 4. Exploratory data analysis
 
-**Principal component analysis** (PCA) is another type of quality control that is very common in "-omics" data. Typically we use PCA to visualise data that is very high dimensional (lots of samples and proteins). This way we can identify outlier samples. 
+**Principal component analysis** (PCA) is another type of quality control that is very common in "-omics" data. Typically we use PCA to visualize data that is very high dimensional (lots of samples and proteins). This way we can identify outlier samples. 
 
 In our case, we will expect that control samples will be similar to each other, and samples treated with kestose will be similar to each other. 

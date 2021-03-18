@@ -181,6 +181,7 @@ $$ \hat{y_{i}} = \hat{\beta_{0}} + \hat{\beta_{1}}x_{i} + \epsilon_{i}$$
 
 Here, $\hat{y_{i}}$ is bill length, $x_{i}$ is bill depth.
 Now we've estimated:
+
 - $\hat{\beta_{0}}$, the intercept = 55.0674
 - $\hat{\beta_{1}}$ the bill depth coefficient = -0.6498
 
@@ -215,7 +216,7 @@ We have some options on possible formulas for the linear regression:
     * $\hat{length_{i}} = \hat{\beta_{0}} + \hat{\beta_{1}}depth_{i} + \hat{\beta_{2}}species_{i} + \hat{\beta_{2}}species_{i}depth_{i} + \epsilon_{i}$ 
 
 
-We're going to be more interested in **3.** 
+We're going to be more interested in **1. and 3.**  as 2. is not commonly used.
 
 ## 6. Your first exercise   
  
@@ -251,7 +252,8 @@ How can we interpret these linear models? These get a bit more confusing, but we
 We've estimated more coefficients this time, so our equation is getting a bit longer. Now it looks like:
 
 $$ \hat{y_{i}} = 13.2164 + 1.3948x_{i} + 9.939\text{Chinstrap} +  13.4033 \text{Gentoo} + \epsilon_{i}$$
-1. Notice the positive slope! This is different from last time.
+
+1. Notice the positive slope! This is different from last time. 
 2. What are we supposed to do with "Chinstrap" and "Gentoo"?
 
 "Chinstrap" and "Gentoo" are in there to make our equation "easier" on us. If the data we are analysing are from a  Chinstrap penguin, then Chinstrap will become a "1" and Gentoo a "0" and vice versa. If the data are from an Adelie penguin, both will be 0.
@@ -279,9 +281,12 @@ penguins$species <- relevel(as.factor(penguins$species), ref="Chinstrap")
 lm2_relevel <- lm(formula = bill_length_mm ~ bill_depth_mm + species, data = penguins)
 summary(lm2_relevel)
 ```
+
+Notice how the slope doesn't change? So far, we've only told R to look for different slopes for each species.
+
 ### Multiple linear model with interations, lm4
 
-**lm4** is giving us a model that includes:
+In this regression, **lm4** is giving us a model that includes:
 - different intercepts per species
 - different bill length coefficients per species
 
@@ -300,6 +305,8 @@ $$ \hat{y_{i}} = 23.0681 + 0.857x_{i} -9.6402(1)-5.8386(0) + 1.0651x_{i}(1) + 1.
 $$ \hat{y_{i}} = 23.0681 + 0.857x_{i} -9.6402 + 1.0651x_{i} +  \epsilon_{i}$$
 $$ \hat{y_{i}} = 13.4279 + 0.857x_{i} + 1.0651x_{i} +  \epsilon_{i}$$
 $$ \hat{y_{i}} = 13.4279 + 1.9221x_{i}  +  \epsilon_{i}$$
+
+**What would Gentoo's equation look like?**
 
 ## 7. Are all penguins the same?
 

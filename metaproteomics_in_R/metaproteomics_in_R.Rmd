@@ -9,6 +9,7 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 library(learnr)
 library(tidyverse)
+library(ggfortify)
 knitr::opts_chunk$set(echo = FALSE)
 #knitr::opts_knit$set(root.dir = '../metaproteomics_in_R/')
 ```
@@ -77,11 +78,15 @@ Today we will be analyzing protein-group data from a microbiome metaproteomic ex
 
 Three samples are **control** samples. These will be labeled PBS1, PBS2, PBS3.
 
-Three samples are treated with **kestose**, a prebiotic. These will be labeled KES1, KES2, KES3.
+Three samples are treated with **1-kestose**, a prebiotic. These will be labeled KES1, KES2, KES3.
 
 ### Before we start...
 
-Let's discuss our hypotheses. What is FOS? What is a prebiotic? What do you think will happen to a microbiome that is treated with a prebiotic?
+Let's discuss our hypotheses. 
+
+1. What is 1-kestose? *Hint: It is a component of fructooligosaccharides*
+2. What is a prebiotic? 
+3. What do you think will happen to a microbiome that is treated with a prebiotic?
 
 ## 2. Loading our microbiome data
 
@@ -156,6 +161,7 @@ missing_values <- log_maxlfq_long %>%
     summarise(count = n())
 missing_percent <- missing_values %>%
         mutate(Percent = count/nrow(log_maxlfq)*100) 
+swapped_log_maxlfq <- log_maxlfq %>% select(-protein_id) %>% t()
 ```
 
 Before we plot the data to make sure everything looks ok, we need to transform the data by log~2~. We log transform data to reduce the contribution that really highly or lowly abundant proteins might have on any statistical analyses we may do. We can choose any base for logging the data, but biologists often choose 2 because it is more "interpretable", but it is really up to the researcher. 
@@ -244,6 +250,25 @@ Let's plot the percentage of missing values. To do that, we'll calculate the per
 ```
 ## 4. Exploratory data analysis
 
-**Principal component analysis** (PCA) is another type of quality control that is very common in "-omics" data. Typically we use PCA to visualize data that is very high dimensional (lots of samples and proteins). This way we can identify outlier samples. 
+**Principal component analysis** (PCA) is another type of analysis that is used to test quality control, and is very common in "-omics" data (such as genomics, transcriptomics, proteomics, etc). Typically we use PCA to visualize data that is very high dimensional (lots of samples and proteins). This way we can identify outlier samples that may have problems due to technical issues. 
 
-In our case, we will expect that control samples will be similar to each other, and samples treated with kestose will be similar to each other. 
+There isn't enough time to go into what PCA does, but [here is a link](https://setosa.io/ev/principal-component-analysis/) to a visual explanation.
+
+In our case, we will expect that control samples will be similar to each other, and samples treated with 1-kestose will be similar to each other. 
+
+```{r pcaplot, exercise = T, exercise.setup="codebkp"}
+swapped_log_maxlfq <- log_maxlfq %>% select(-protein_id) %>% t()
+metadata <- data.frame(Treatment = c("KES", "KES", "KES", "PBS", "PBS", "PBS"))
+
+autoplot(prcomp(swapped_log_maxlfq), data = metadata, colour = 'Treatment')
+```
+
+What is this PCA plot telling us about our data? Let's discuss.
+
+##5. Further analysis
+
+There is more data analysis that we can do, but there wasn't enough time to show it all.
+
+For example, we can look into the taxonomy of the samples and test how 1-kestose may alter the composition of the gut microbiota. Or, we can look into how the microbiome changes functionally with different treatments. We can see how specific proteins/peptides change expression by looking at the "fold change" values of PBS vs KES samples. 
+
+Hopefully this shows you a bit about what we can do in R and how powerful and fun it can be!
